@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+#include <iomanip>
 #define MAXCITY 30    
 using namespace std;
 struct FlightType {
@@ -227,7 +228,7 @@ FlightType *CityDepartureList(char *cityName){
 }
 void DisplayDepartureList(char *cityName){
 	FlightType *tmp=CityDepartureList(cityName);
-	cout<<cityName<<endl<<"Departure List :\n";
+	cout<<endl<<cityName<<endl<<"Departure List :\n";
 	for(; tmp!=NULL; tmp=tmp->nextDeparture)
 	{
 		cout<<"To  "<<tmp->endCity<<"   at  "<<tmp->timeDepart<<endl;
@@ -246,7 +247,7 @@ FlightType * CityArrivalList(char *cityName){
 }
 void DisplayArrivalList(char *cityName){
 	FlightType *tmp=CityArrivalList(cityName);
-	cout<<cityName<<endl<<"Arrival List :\n";
+	cout<<endl<<cityName<<endl<<"Arrival List :\n";
 	for(; tmp!=NULL; tmp=tmp->nextArrival)
 	{
 		cout<<"From  "<<tmp->startCity<<"   at  "<<tmp->timeArrival<<endl;
@@ -254,13 +255,28 @@ void DisplayArrivalList(char *cityName){
 	cout<<endl<<endl;
 
 }
-
+void DisplayFlightInfo(FlightType *flight){
+	cout<<endl;
+	cout<<left<<setw(8)<<flight->FlightNo;
+	cout<<left<<setw(15)<<flight->startCity;
+	cout<<left<<setw(8)<<flight->timeDepart;
+	cout<<left<<setw(15)<<flight->endCity;
+	cout<<left<<setw(8)<<flight->timeArrival;
+}
+void DisplayAllFlightsData(){
+	for(int i=0; i<MAXFLIGHT ; i++){
+		if(flightList[i].flight==NULL)
+		return;
+		DisplayFlightInfo(flightList[i].flight);
+	}
+}
 
 int main(){
 
 
     init();
 	ReadFlightData();
+	DisplayAllFlightsData();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");

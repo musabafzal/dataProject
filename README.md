@@ -14,12 +14,14 @@ void DisplayFlightInfo(FlightType * flight){
        111	 Lahore	700	Karachi	830
 */
 }
+#done
 
 /* DisplayFlightInfo   display all flights info in tabular form */
 void DisplayAllFlightsData(){
 /*  makes use of the function named DisplayFlightInfo().
 */
 }
+#done
 
 /*  FlightByNumber  return info about a flight given its flight number  */
 FlightType * FlightByNumber(int FlightNo)
