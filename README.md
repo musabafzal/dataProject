@@ -25,10 +25,10 @@ void DisplayAllFlightsData(){
 
 /*  FlightByNumber  return info about a flight given its flight number  */
 FlightType * FlightByNumber(int FlightNo)
-
+#done
 /*  DisplayAllCities  Show a list of all the cities serviced by airline in a tabular form   */
 void DisplayAllCities();
-
+#done
 /* DisplayCitiesFrom  Show a list of cities which can be reached from a particular city. */
 void DisplayCitiesFrom(char *startCity){
 /* This function will make use of depth first search (DFS) graph traversal algorithm.*/

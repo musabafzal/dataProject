@@ -256,12 +256,14 @@ void DisplayArrivalList(char *cityName){
 
 }
 void DisplayFlightInfo(FlightType *flight){
+	if(flight!=NULL){
 	cout<<endl;
 	cout<<left<<setw(8)<<flight->FlightNo;
 	cout<<left<<setw(15)<<flight->startCity;
 	cout<<left<<setw(8)<<flight->timeDepart;
 	cout<<left<<setw(15)<<flight->endCity;
 	cout<<left<<setw(8)<<flight->timeArrival;
+	}
 }
 void DisplayAllFlightsData(){
 	for(int i=0; i<MAXFLIGHT ; i++){
@@ -270,13 +272,31 @@ void DisplayAllFlightsData(){
 		DisplayFlightInfo(flightList[i].flight);
 	}
 }
-
+FlightType *FlightByNumber(int FlightNo){
+	int i;
+	for(i=0; i<MAXFLIGHT ; i++){
+	if(flightList[i].flight==NULL)
+		return NULL;
+	if(flightList[i].FlightNo==FlightNo)
+	break;
+	}
+	return flightList[i].flight;
+}
+void DisplayAllCities(){
+	for(int i=0;i<MAXCITY;i++)
+	{
+		if(cityList[i].cityName==NULL)
+		return;
+		cout<<endl<<cityList[i].cityName;
+	}
+}
 int main(){
 
 
     init();
 	ReadFlightData();
-	DisplayAllFlightsData();
+	DisplayFlightInfo(FlightByNumber(654));
+	DisplayAllCities();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");
