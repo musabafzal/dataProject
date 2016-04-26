@@ -265,6 +265,6 @@ int main(){
 	ReadFlightData();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
-	DisplayDepartureList("UAE");
+	DisplayDepartureList("UAE");s
 	
 }
