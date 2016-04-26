@@ -1,5 +1,5 @@
-# dataproject
-
+﻿# dataproject
+#done
 /*  MakeFlightNode  create a flight node from the given info */
 FlightType *MakeFlightNode(int FlightNo, char *startCity, 
  			 int timeDepart, char *endCity, int timeArrival);
