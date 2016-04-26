@@ -3,11 +3,11 @@
 /*  MakeFlightNode  create a flight node from the given info */
 FlightType *MakeFlightNode(int FlightNo, char *startCity, 
  			 int timeDepart, char *endCity, int timeArrival);
-
+#done
 /*  ReadFlightData  make a flight database from scratch. Some examples are shown */
 void ReadFlightData(){
 }
-
+#done
 /* DisplayFlightInfo   display a particular flight info in tabular form  */
 void DisplayFlightInfo(FlightType * flight){
 /* For example following data is displayed
@@ -37,27 +37,22 @@ void DisplayShortestPath(char *startCity, char *endCity){
 /* This function will make use of a shortest path algorithm like Dijkstra’s shortest path algorithm or Floyd -Warshal Algorithm. The shortest path means the route taking shortest time from source to destination. */
  }
 
-/*   CityDepartureList  return a sorted list of departures for a city    */
-FlightType *CityDepartureList(char *cityName)
-{
-}
-
 /*CityDepartureList  return a sorted list of departures for a city    */
 FlightType *CityDepartureList(char *cityName);
-
+#done
 /*  CityArrivalList  return a sorted list of arrivals for a city  */
 FlightType * CityArrivalList(char *cityName);
-
+#done
 /* DisplayDepartureList  Show flight departures for a city listed in order of time. */
 void DisplayDepartureList(char *cityName){
     /* This function makes use of the function CityDepartureList(cityName) */
 }
-
+#done
 /*DisplayArrivalList  Show flight arrivals for a city listed in order of time. */
 void DisplayArrivalList(char *cityName){
    /* This function makes use of the function CityArrivalList(cityName) */
 }
-
+#done
 / * MakeReserveNode  create a reservation node from the given info */
 ReservationType MakeReserveNode(char *firstName, char *lastName,
 		 int tripType, RouteType route1, RouteType route2);
