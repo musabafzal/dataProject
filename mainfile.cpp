@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 #include <string.h>
 #define MAXCITY 30    
@@ -265,6 +263,6 @@ int main(){
 	ReadFlightData();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
-	DisplayDepartureList("UAE");s
+	DisplayDepartureList("UAE");
 	
 }
