@@ -67,15 +67,21 @@ ReservationType MakeReserveNode(char *firstName, char *lastName,
                                       Return 0 if a route is found and 
                                       Return -1 if no route could be found */
 int findRoute(char *startCity, char *endCity, RouteType &route){
-/* The algorithm for FindRoute() will be as follows: 
+/* The algorithm for FindRoute() will be as follows:
+ 
 1.	Get the list of departures for startCity and if there exist any direct flights to endCity then pick one of the flights and return it.
+
 2.	If no direct flights exist then compare the departure list for startCity with the arrival list for endCity. Try to find a city in common to both lists to use for connections. As a constraint, the second flight must leave at least MINLAYOVER minutes (default of 30) after the first flight arrives. Return any valid connection.
+
 3.	If no flight combinations exist then report that reservation system will not be able to handle the passenger's travel needs and do not make the reservation. 
 */
-   }
+ }
+
 /* MakeReservation  make a reservation for a passenger by reading info from the user. */
+
 void MakeReservation(Flights &flightdb){
 /* In the function, you will need to gather the name of the passenger and the departure city along with the type of travel (round trip or one-way) and the day(s) of travel. For each trip you will need to see if a flight can be booked based on the flight database. Passengers prefer direct flights between cities, but will accept a trip with one connecting flight. By default passengers will accept any trip you give them on the day of travel (no preferences for the time of day). 
+
 The function makes use of the functions FindRoute()and MakeReserveNode(). */
 }
 
