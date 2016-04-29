@@ -90,7 +90,7 @@ FlightType *nextDp(FlightType *newPtr)
     else
     {
     	newPtr->nextDeparture=tmp;
-    	tmp=newPtr;
+    	cityList[i].nextDeparture=newPtr;
     	return newPtr->nextDeparture;
 	}
   }
@@ -145,6 +145,14 @@ void map(char *s)
 {
 	cityList[++top].cityName=new char[strlen(s)+1];
 	cityList[top].cityName=s;
+}
+int findind(char *s)
+{
+	for(int i=0; i<MAXCITY; i++)
+	{
+		if(strcmp(cityList[i].cityName,s)==0)
+		return i;
+	}
 }
 FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *endCity, int timeArrival){
 	
@@ -290,6 +298,61 @@ void DisplayAllCities(){
 		cout<<endl<<cityList[i].cityName;
 	}
 }
+int timeweight(int timeDepart, int timeArrival)
+{
+	int min1; int min2;   int hour1,hour2;   int time;
+	min1=timeDepart%100;      
+	min2=timeArrival%100;
+	hour1=timeDepart/100;
+	hour2=timeArrival/100;
+	if(min2-min1<0)
+	{
+		min2=min2+60;
+		min2=min2-min1;
+		hour2=hour2-1;
+	}
+	else
+	min2=min2-min1;
+	
+	hour2=hour2-hour1;
+	time=(hour2*100)+min2;
+	return time;
+}
+int min(int a,int b,int c=4800,int d=4800, int e=4800, int f=4800)
+{
+	int min;
+	int N[6]={a,b,c,d,e,f};
+	min=N[0];
+	for(int i=0; i<6; i++)
+	{
+		if(N[i]<min)
+		min=N[i];
+	}
+	return min;
+}
+void DisplayShortestPath(char *startCity,char *endCity)
+{
+	int a[30];     int i;     FlightType *p,*t[30];  int w;   int min=4800;   int j=0; int c=0;
+	
+	i=findind(startCity);
+	a[j]=i;
+	for(int z=0; z<j ;z++)
+	{
+	for(p=cityList[a[z]].nextDeparture;  p!=NULL ;  p=p->nextDeparture)
+	{
+		w=timeweight(p->timeDepart,p->timeArrival);
+		if(w<min)
+		{
+			min=w;
+			t[c]=p;
+		}
+	}
+    i=findind(t[c]->endCity);
+    c++;
+    a[++j]=i;
+    }
+    
+}
 int main(){
 
 
@@ -300,5 +363,6 @@ int main(){
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");
-	
+	DisplayDepartureList("Lahore");
+	DisplayShortestPath("Lahore","Karachi");
 }
