@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string.h>
+#include <conio.h>
 #include <iomanip>
-#define MAXCITY 30    
+#define MAXCITY 30
 using namespace std;
 struct FlightType {
     int FlightNo;            	/* flight number */
@@ -34,8 +35,8 @@ struct ReservationType {
     char *firstName;              /* first name of passenger */
     char *lastName;               /* last name of passenger */
     int tripType;                 /* ROUNDTRIP or ONEWAY */
-    RouteType route1;             /* first route */
-    RouteType route2;             /* second route (only if ROUNDTRIP) */
+    RouteType *route1;             /* first route */
+    RouteType *route2;             /* second route (only if ROUNDTRIP) */
     ReservationType *nextReserve; /* next reservation in linked list */
 };
 
@@ -48,8 +49,8 @@ struct FlightNumberListType {
 
 FlightNumberListType flightList[MAXFLIGHT];  /* array of flights */
 CityListType cityList[MAXCITY];  /* array of cities */
-void init()
-{
+
+void init(){
 	for(int i=0; i<MAXCITY; i++)
 	{
 		cityList[i].cityName=NULL;
@@ -90,7 +91,7 @@ FlightType *nextDp(FlightType *newPtr)
     else
     {
     	newPtr->nextDeparture=tmp;
-    	tmp=newPtr;
+    	cityList[i].nextDeparture=newPtr;
     	return newPtr->nextDeparture;
 	}
   }
@@ -135,16 +136,15 @@ FlightType *nextAr(FlightType *newPtr)
 	else
 	{
 		newPtr->nextArrival=tmp;
-		tmp=newPtr;
+		cityList[i].nextArrival=newPtr;
 		return newPtr->nextArrival;
 	}
     }
 }
-int top=-1;
-void map(char *s)
-{
-	cityList[++top].cityName=new char[strlen(s)+1];
-	cityList[top].cityName=s;
+int top1=-1;
+void map(char *s){
+	cityList[++top1].cityName=new char[strlen(s)+1];
+	cityList[top1].cityName=s;
 }
 FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *endCity, int timeArrival){
 	
@@ -160,7 +160,6 @@ FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *
 	newPtr->nextArrival=nextAr(newPtr);
 	return newPtr;
 }
-
 void ReadFlightData(){
 	flightList[0].FlightNo = 111;
 	flightList[1].FlightNo = 222;
@@ -289,16 +288,85 @@ void DisplayAllCities(){
 		return;
 		cout<<endl<<cityList[i].cityName;
 	}
+
 }
+#define NOTVISITED 1
+#define VISITED 2
+#define PROCESSED 3
+int top=-1;
+const int N = 10;
+CityListType stack[N];
+void Push(CityListType newData){
+	if(top == N-1);
+	else{
+	      top=top+1;
+	      stack[top] = newData;
+	}
+}
+CityListType Pop(){
+	CityListType topData;
+	if(top == -1){
+	     }
+	else {
+	     topData = stack[top];
+	     top = top-1;
+	     return topData;
+	 }
+}
+
+void DisplayCitiesFrom(char *startCity){
+	int i,j,k,l,count=0;   FlightType *tmp;
+	for(i=0; i<MAXCITY; i++)
+	{
+		if(!(strcmp(cityList[i].cityName,startCity)))
+		break;
+	}
+	for(k=0;k<MAXCITY;k++){
+		if(cityList[k].cityName==NULL)
+		break;
+		count++;
+	}
+	int *status = new int[count];
+	for(j=0;j<count; j++){
+		status[j]=NOTVISITED;
+	}
+	Push(cityList[i]);
+	status[i]=VISITED;
+	CityListType citytmp;
+	while(top!=-1){
+	cout<<citytmp.cityName<<"->";
+	citytmp=Pop();
+	int z=0;
+	for(z=0;z<count;z++){
+		if(!(strcmp(cityList[z].cityName,citytmp.cityName)))
+		break;
+	}
+	int m;
+	for(tmp= citytmp.nextDeparture;tmp!=NULL;tmp=tmp->nextDeparture){
+		
+		for(m=0;m<count;m++){
+			if(!(strcmp(cityList[m].cityName,tmp->endCity)))
+			break;
+		}
+		if(status[m]==NOTVISITED){
+		Push(cityList[m]);
+		status[m]=VISITED;
+		}
+	}
+	status[z]=PROCESSED;
+
+	}
+}
+
 int main(){
-
-
     init();
 	ReadFlightData();
-	DisplayFlightInfo(FlightByNumber(654));
-	DisplayAllCities();
+//	DisplayDepartureList("Bahawalpur");
+	DisplayCitiesFrom("Karachi");
+/*	DisplayFlightInfo(FlightByNumber(654));
+//	DisplayAllCities();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
-	DisplayDepartureList("UAE");
+	DisplayDepartureList("UAE");*/
 	
 }
