@@ -140,11 +140,11 @@ FlightType *nextAr(FlightType *newPtr)
 	}
     }
 }
-int top=-1;
+int top1=-1;
 void map(char *s)
 {
-	cityList[++top].cityName=new char[strlen(s)+1];
-	cityList[top].cityName=s;
+	cityList[++top1].cityName=new char[strlen(s)+1];
+	cityList[top1].cityName=s;
 }
 int findind(char *s)
 {
@@ -318,6 +318,15 @@ int timeweight(int timeDepart, int timeArrival)
 	time=(hour2*100)+min2;
 	return time;
 }
+int find(int k, int a[], int j)
+{
+	for(int i=0; i<=j; i++)
+	{
+		if(a[i]==k)
+		return 0;
+	}
+	return 1;
+}
 int min(int a,int b,int c=4800,int d=4800, int e=4800, int f=4800)
 {
 	int min;
@@ -330,28 +339,168 @@ int min(int a,int b,int c=4800,int d=4800, int e=4800, int f=4800)
 	}
 	return min;
 }
+int timeadd(int x, int y)
+{ int time;
+   int min1,min2,hour1,hour2;
+   min1=x%100;    hour1=x/100;
+   hour2=y/100;
+   min2=y%100;
+   if(min1+min2>=60)
+   {
+   	    min2=(min2+min1)-60;
+   	    hour2=hour2+1+hour1;
+   }
+   else
+   {
+     min2=min2+min1;
+     hour2=hour2+hour1;
+  }
+     time=(hour2*100)+min2;
+     return time;
+}
 void DisplayShortestPath(char *startCity,char *endCity)
 {
-	int a[30];     int i;     FlightType *p,*t[30];  int w;   int min=4800;   int j=0; int c=0;
+	int a[30]={0};     int i;     FlightType *p,*t;  int w[top1];   int min=4800;   int j=0; int c=-1; int weight; int s,e; int cc; int parent,path[30],par[30];
 	
 	i=findind(startCity);
+	s=i;
+	
+	w[s]=0;
+	e=findind(endCity);
 	a[j]=i;
-	for(int z=0; z<j ;z++)
+	
+	while(j!=top1)
+	   {   //cout<<"Flag 3\n";
+	      min=4800;
+	       for(int z=j; z>=0  ;z--)
+	       {    
+	           for(p=cityList[a[z]].nextDeparture;  p!=NULL;  p=p->nextDeparture)
+	          {
+                    weight=timeadd(w[a[z]],timeweight(p->timeDepart,p->timeArrival));
+                    cc=findind(p->endCity);
+		            if(weight<min && find(cc,a,j))
+		            {
+		              parent=a[z];
+			          min=weight;
+			          t=p;	
+		            }
+	          }
+           }
+            
+            i=findind(t->endCity);
+            path[i]=parent;
+            
+             w[i]=min;
+             
+             a[++j]=i;
+             //cout<<"Flag 1\n";
+         for(int k=0; k<=top1; k++)
+          {
+          	//cout<<"Flag 2\n";
+             if(k!=s && find(k,a,j))
+              {
+        	     min=4800;
+        		for(int z=j; z>=0  ;z--)
+	            {
+	               for(p=cityList[a[z]].nextDeparture;  p!=NULL;  p=p->nextDeparture)
+	               {
+		              if(strcmp(p->endCity,cityList[k].cityName)==0)
+		              {
+		              	weight=timeadd(timeweight(p->timeDepart,p->timeArrival),w[a[z]]);
+		                 if(weight<min)
+		                 {
+		                    min=weight;	
+						 }
+		              }   
+	               }
+	               
+                }  
+				w[k]=min; 
+		      }
+          }
+         //cout<<w[e]<<endl;
+     }
+     int q=0;
+     for(parent=e; q<=30 && par[c]!=s; q++)
+     {
+     	par[++c]=path[parent];
+		parent=par[c];	
+	 }
+	 for(;c!=-1;)
+	 {
+	 	cout<<cityList[par[c--]].cityName<<"->";
+	 }
+	 cout<<cityList[e].cityName;
+	 cout<<endl;
+     cout<<"Shortest Path weight: \n"<<w[e]/100<<": "<<w[e]%100<<endl;
+}
+#define NOTVISITED 1
+#define VISITED 2
+#define PROCESSED 3
+int top=-1;
+const int N = 10;
+CityListType stack[N];
+void Push(CityListType newData){
+	if(top == N-1);
+	else{
+	      top=top+1;
+	      stack[top] = newData;
+	}
+}
+CityListType Pop(){
+	CityListType topData;
+	if(top == -1){
+	     }
+	else {
+	     topData = stack[top];
+	     top = top-1;
+	     return topData;
+	 }
+}
+
+void DisplayCitiesFrom(char *startCity){
+	int i,j,k,l,count=0;   FlightType *tmp;
+	for(i=0; i<MAXCITY; i++)
 	{
-	for(p=cityList[a[z]].nextDeparture;  p!=NULL ;  p=p->nextDeparture)
-	{
-		w=timeweight(p->timeDepart,p->timeArrival);
-		if(w<min)
-		{
-			min=w;
-			t[c]=p;
+		if(!(strcmp(cityList[i].cityName,startCity)))
+		break;
+	}
+	for(k=0;k<MAXCITY;k++){
+		if(cityList[k].cityName==NULL)
+		break;
+		count++;
+	}
+	int *status = new int[count];
+	for(j=0;j<count; j++){
+		status[j]=NOTVISITED;
+	}
+	Push(cityList[i]);
+	status[i]=VISITED;
+	CityListType citytmp;
+	while(top!=-1){
+		citytmp=Pop();
+	cout<<citytmp.cityName<<"->";
+	
+	int z=0;
+	for(z=0;z<count;z++){
+		if(!(strcmp(cityList[z].cityName,citytmp.cityName)))
+		break;
+	}
+	int m;
+	for(tmp= citytmp.nextDeparture;tmp!=NULL;tmp=tmp->nextDeparture){
+		
+		for(m=0;m<count;m++){
+			if(!(strcmp(cityList[m].cityName,tmp->endCity)))
+			break;
+		}
+		if(status[m]==NOTVISITED){
+		Push(cityList[m]);
+		status[m]=VISITED;
 		}
 	}
-    i=findind(t[c]->endCity);
-    c++;
-    a[++j]=i;
-    }
-    
+	status[z]=PROCESSED;
+
+	}
 }
 int main(){
 
@@ -364,5 +513,7 @@ int main(){
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");
 	DisplayDepartureList("Lahore");
-	DisplayShortestPath("Lahore","Karachi");
+	DisplayShortestPath("Quetta","Bahawalpur");
+	
+	DisplayCitiesFrom("Islamabad");
 }
