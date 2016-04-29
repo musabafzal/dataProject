@@ -135,7 +135,7 @@ FlightType *nextAr(FlightType *newPtr)
 	else
 	{
 		newPtr->nextArrival=tmp;
-		tmp=newPtr;
+		cityList[i].nextArrival=newPtr;
 		return newPtr->nextArrival;
 	}
     }
