@@ -38,6 +38,7 @@ void DisplayCitiesFrom(char *startCity){
 void DisplayShortestPath(char *startCity, char *endCity){
 /* This function will make use of a shortest path algorithm like Dijkstra’s shortest path algorithm or Floyd -Warshal Algorithm. The shortest path means the route taking shortest time from source to destination. */
  }
+#done
 
 /*CityDepartureList  return a sorted list of departures for a city    */
 FlightType *CityDepartureList(char *cityName);
@@ -58,6 +59,7 @@ void DisplayArrivalList(char *cityName){
 / * MakeReserveNode  create a reservation node from the given info */
 ReservationType MakeReserveNode(char *firstName, char *lastName,
 		 int tripType, RouteType route1, RouteType route2);
+#done
 
 /* FindRoute  find a route from city1 to city2 and put it in the route structure, which is passed by 
 		 reference here.
@@ -75,33 +77,41 @@ int findRoute(char *startCity, char *endCity, RouteType &route){
 3.	If no flight combinations exist then report that reservation system will not be able to handle the passenger's travel needs and do not make the reservation. 
 */
  }
+#done
 
 /* MakeReservation  make a reservation for a passenger by reading info from the user. */
 
 void MakeReservation(Flights &flightdb){
+#done
 
 /* In the function, you will need to gather the name of the passenger and the departure city along with the type of travel (round trip or one-way) and the day(s) of travel. For each trip you will need to see if a flight can be booked based on the flight database. Passengers prefer direct flights between cities, but will accept a trip with one connecting flight. By default passengers will accept any trip you give them on the day of travel (no preferences for the time of day). 
 
 The function makes use of the functions FindRoute()and MakeReserveNode(). */
 }
+#done
 
 /* printRoute  prints the route stored in variable route  */
 void printRoute(int ifExists, RouteType route);
-
+#done
 
 /* PrintReservation  prints the reservation schedule, as pointed by  pReserve */
 PrintReservation(ReservationType *pReserve)
+#done
 
 /* PrintAllReservations  prints all the reservations in the database */
 PrintAllReservations()
+#done
 
 /* PrintPassengers  print the list of all passengers on a particular flight  */
 void PrintPassengers(int FlightNo);
+#done
 
 /* PrintSchedule  prompt the user for a passenger’s (first and second) name and print that passenger's schedule. */
 void PrintSchedule(){
    /* This function makes use of the function PrintReservation() */
 }
+#done
 
 /* DeleteReserve  delete a reservation for a passenger by prompting for name  */
 void DeleteReserve()
+#done

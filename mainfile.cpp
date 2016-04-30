@@ -693,12 +693,13 @@ void MakeReservation()
 	    if(reserveHead==NULL)
 	    {
 	    	reserveHead=R;
+	    	reserveTail=reserveHead;
 		}
 		else
 		{
-			ReservationType *p=reserveHead;
-	    for(; p!=NULL; p=p->nextReserve);
-	     p=R;
+			
+	    reserveTail->nextReserve=R;
+	     reserveTail=reserveTail->nextReserve;
 	     
 	    }
 	     
@@ -732,6 +733,14 @@ void PrintReservation(ReservationType *P)
 	cout<<"Flight No 1 : "<<P->route1.FlightNo1<<setw(5)<<"Flight No 2 : "<<P->route1.FlightNo2<<endl;
      }
 }
+void printRoute(int ifExists, RouteType route){
+	if(ifExists==1){
+	cout<<"Flight No 1 : "<<route.FlightNo1<<setw(5)<<"Flight No 2 : "<<route.FlightNo2<<endl;
+	}
+	else{
+		cout<<"No Route Exists"<<endl;
+	}
+}
 void PrintAllReservation()
 {
 	ReservationType *p=reserveHead;
@@ -741,20 +750,96 @@ void PrintAllReservation()
 	      PrintReservation(p);
     }
 }
+void PrintPassengers(int FlightNo){
+	ReservationType *p=reserveHead;
+	
+
+	
+	cout<<endl;
+	for(; p!=NULL; p=p->nextReserve){
+		if(FlightNo==p->route1.FlightNo1||FlightNo==p->route1.FlightNo2||FlightNo==p->route2.FlightNo1||FlightNo==p->route2.FlightNo2){
+			cout<<"First Name: "<<p->firstName<<endl;
+			cout<<"Last Name: "<<p->lastName<<endl;
+		}
+	}	
+}
+void PrintSchedule(){
+	ReservationType *p=reserveHead;
+	string firstName, lastName; char *f,*l;
+	
+	cout<<"Enter first Name :\n";
+	cin>>firstName;
+	cout<<"Enter last Name : \n";
+	cin>>lastName;
+	
+	f=new char[firstName.length()+1];
+	firstName.copy(f,firstName.length(),0);
+	l=new char[lastName.length()+1];
+	lastName.copy(l,lastName.length(),0);
+
+	cout<<endl;
+	for(;p!=NULL;p=p->nextReserve){
+		if(!strcmp(f,p->firstName)&&!strcmp(l,p->lastName)){
+			break;
+		}
+	}
+	if(p!=NULL)
+	PrintReservation(p);
+	else 
+		cout<<"No Record Found"<<endl;
+}
+void DeleteReserve(){
+	ReservationType *p=reserveHead;
+	string firstName, lastName; char *f,*l;
+	
+	cout<<"Enter first Name :\n";
+	cin>>firstName;
+	cout<<"Enter last Name : \n";
+	cin>>lastName;
+	
+	f=new char[firstName.length()+1];
+	firstName.copy(f,firstName.length(),0);
+	l=new char[lastName.length()+1];
+	lastName.copy(l,lastName.length(),0);
+
+	cout<<endl;
+	for(;p!=NULL;p=p->nextReserve){
+		if(!strcmp(f,p->firstName)&&!strcmp(l,p->lastName)){
+			break;
+		}
+	}
+	if(p!=NULL){
+		if(p==reserveHead){
+			reserveHead=reserveHead->nextReserve;
+		}
+		else{
+			ReservationType *prev=reserveHead,*p1=reserveHead->nextReserve;
+			for(;p1!=NULL;p1=p1->nextReserve){
+				if(p==p1){
+					break;
+				}
+				prev=prev->nextReserve;
+			}
+			prev->nextReserve=p1->nextReserve;
+		}
+	
+	}
+	else 
+		cout<<"No Record Found"<<endl;
+}
 int main(){
-
-
     init();
 	ReadFlightData();
-	DisplayFlightInfo(FlightByNumber(654));
-	DisplayAllCities();
+//	DisplayFlightInfo(FlightByNumber(654));
+/*	DisplayAllCities();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");
 	DisplayDepartureList("Lahore");
-	DisplayShortestPath("UAE","Bahawalpur");
-	cout<<"\n\n\tReservation\n";
+	DisplayShortestPath("UAE","Bahawalpur");*/
 	MakeReservation();
-	PrintReservation(reserveHead);
-	DisplayCitiesFrom("Islamabad");
+	MakeReservation();
+	PrintAllReservation();
+	DeleteReserve();
+	PrintAllReservation();
 }
