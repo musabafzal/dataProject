@@ -14,7 +14,7 @@ struct FlightType {
     FlightType *nextArrival; 	/* next arrival node to this city */
 };
 
-
+int Noflights=21;
 struct CityListType {
     char *cityName;           	   /* name of the city */
     FlightType *nextDeparture;    /* first departure from this city */
@@ -39,7 +39,7 @@ struct ReservationType {
     ReservationType *nextReserve; /* next reservation in linked list */
 };
 
-ReservationType *reserveHead,*reserveTail; /* head and tail of the reservation list */
+ReservationType *reserveHead=NULL,*reserveTail=NULL; /* head and tail of the reservation list */
 #define MAXFLIGHT 200             /* maximum number of flights to maintain */
 struct FlightNumberListType {
     int FlightNo;             /* flight number */
@@ -170,6 +170,7 @@ FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *
 	newPtr->timeArrival=timeArrival;
 	newPtr->nextDeparture=nextDp(newPtr);
 	newPtr->nextArrival=nextAr(newPtr);
+	newPtr->noOfPassengers=0;
 	return newPtr;
 }
 
@@ -230,12 +231,16 @@ void ReadFlightData(){
 }
 FlightType *CityDepartureList(char *cityName){
 	int i=0;   FlightType *tmp;
+	cout<<endl;
 	for(i=0; i<MAXCITY; i++)
 	{
+		
+		tmp=cityList[i].nextDeparture;
 		if(!(strcmp(cityList[i].cityName,cityName)))
 		break;
 	}
-	return cityList[i].nextDeparture;
+	;
+	return tmp;
 	
 }
 void DisplayDepartureList(char *cityName){
@@ -506,20 +511,80 @@ void DisplayCitiesFrom(char *startCity){
 
 	}
 }
-
+int timediff(int time1,int time2,int &tripdate)
+{
+	int min1,min2,hour1,hour2,time; int dd,mm;    dd=tripdate%100;   mm=tripdate/100;
+	if(time1>time2)
+	{
+		min1=time1%100;
+		min2=time2%100;
+		hour1=time1/100;
+		hour2=time2/100;
+		if(min1>0)
+		{
+			hour1=23-hour1;
+			min1=60-min1;
+		}
+		else
+		hour1=24-hour1;
+		hour2=hour1+hour2;
+		min2=min2+min1;
+		if(min2>60)
+		{
+			min2=min2-60;
+			hour2++;
+		}
+		dd++;
+		if(dd>30)
+		{
+			dd=dd-30;
+			mm++;
+		}
+		tripdate=(mm*100)+dd;
+	}
+	else
+	{
+		min1=time1%100;
+		min2=time2%100;
+		hour1=time1/100;
+		hour2=time2/100;
+		if(min2<min1)
+		{
+			hour2--;
+		   min2=min2+60-min1;
+		   hour2=hour2-hour1;
+	    }
+	    else
+	    {
+	    	min2=min2-min1;
+	    	hour2=hour2-hour1;
+		}
+	}
+	time=(hour2*100)+min2;
+	return time;
+}
 int FindRoute(char *startCity, char *endCity, RouteType &route){
-	FlightType *tmp = CityDepartureList(startCity);
+	FlightType *tmp = CityDepartureList(startCity); 
 	int count=0,count1=0;
+	
 	for(;tmp!=NULL;tmp=tmp->nextDeparture){
+		
 		if(!strcmp(tmp->endCity,endCity)){
 			count++;
 			break;
 		}
 	}
 	if(count!=0){
-		route.Day=0316;
-		route.FlightNo1=tmp->FlightNo;
+		
+		route.FlightNo1=tmp->FlightNo;   int i=0;
 		route.FlightNo2=0;
+		for(i=0; i<Noflights ; i++)
+		{
+			 
+			if(flightList[i].FlightNo==route.FlightNo1)
+			break;
+		}
+		flightList[i].flight->noOfPassengers++;
 		route.nHops=1;
 		return 1;
 	}
@@ -540,12 +605,23 @@ int FindRoute(char *startCity, char *endCity, RouteType &route){
 		}
 		
 	}
-	if(count1!=0&&timeweight(tmp1->timeArrival,tmp2->timeDepart)>30){
-		route.Day=0316;
+	if(count1!=0&&timediff(tmp1->timeArrival,tmp2->timeDepart,route.Day)>30){
+		    int i=0;
 		route.FlightNo1=tmp1->FlightNo;
 		route.FlightNo2=tmp2->FlightNo;
-		cout<<tmp1->FlightNo;
-		cout<<tmp2->FlightNo;
+		for(i=0; i<Noflights ; i++)
+		{
+			if(flightList[i].FlightNo==route.FlightNo1)
+			break;
+		}
+		flightList[i].flight->noOfPassengers++;
+		for(i=0; i<Noflights ; i++)
+		{
+			if(flightList[i].FlightNo==route.FlightNo2)
+			break;
+		}
+		flightList[i].flight->noOfPassengers++;
+		
 		route.nHops=2;
 	}
 	else 
@@ -555,6 +631,7 @@ int FindRoute(char *startCity, char *endCity, RouteType &route){
 
 ReservationType *MakeReserveNode(char *firstName, char *lastName, int tripType, RouteType route1, RouteType route2){
 	ReservationType *node = new ReservationType;
+	
 	node->firstName=firstName;
 	node->lastName=lastName;
 	node->tripType=tripType;
@@ -563,7 +640,98 @@ ReservationType *MakeReserveNode(char *firstName, char *lastName, int tripType, 
 	node->nextReserve=NULL;
 	return node;	
 }
-
+void MakeReservation()
+{
+	ReservationType *R;   RouteType rt1,rt2;   
+	string firstName; string lastName;  string startCity,endCity;  int tripType,tripdate,tripdate2;    int reserved,reserved2=1; char *s,*e,*f,*l;
+	cout<<"Enter first Name :\n";
+	cin>>firstName;
+	cout<<"Enter last Name : \n";
+	cin>>lastName;
+	cout<<"Enter Departure City : \n";
+	cin>>startCity;
+	cout<<"Enter Destination City : \n";
+	cin>>endCity;
+	cout<<"Enter 1 for round trip or 0 for one way :\n";
+	cin>>tripType;
+	s=new char[startCity.length()+1];
+	startCity.copy(s,startCity.length(),0);
+	e=new char[endCity.length()+1];
+	endCity.copy(e,endCity.length(),0);
+	f=new char[firstName.length()+1];
+	firstName.copy(f,firstName.length(),0);
+	l=new char[lastName.length()+1];
+	lastName.copy(l,lastName.length(),0);
+	s[startCity.length()]='\0';
+	e[endCity.length()]='\0';
+	f[firstName.length()]='\0';
+	l[lastName.length()]='\0';
+	if(tripType==0)
+	{
+	cout<<"Enter Date of Travel (mm/dd): \n";
+	cin>>tripdate;
+	rt1.Day=tripdate;
+	reserved=FindRoute(s,e,rt1);
+    }
+    else
+    {
+     	cout<<"Enter Date of Travel (mm/dd): \n";
+	    cin>>tripdate;
+     	cout<<"Enter Date of Return (mm/dd): \n";
+	   cin>>tripdate2;
+	    rt1.Day=tripdate;
+	     reserved=FindRoute(s,e,rt1);
+	     
+	    rt2.Day=tripdate2;
+	 	reserved2=FindRoute(e,s,rt2);
+	}
+	 if(reserved!=0 && reserved2!=0)
+	 {
+	 	
+	    R=MakeReserveNode(f,l,tripType,rt1,rt2);
+	    
+	    if(reserveHead==NULL)
+	    {
+	    	reserveHead=R;
+		}
+		else
+		{
+			ReservationType *p=reserveHead;
+	    for(; p!=NULL; p=p->nextReserve);
+	     p=R;
+	     
+	    }
+	     
+     }
+     else
+     {
+     	cout<<"Cannot Book Flight\n";
+	 }
+}
+void PrintReservation(ReservationType *P)
+{
+	if(P==NULL)
+	{
+		cout<<"No Reservation\n";
+		return;
+	}
+	cout<<"First Name : "<<setw(5)<<P->firstName<<endl;
+	cout<<"Last Name : "<<setw(5)<<P->lastName<<endl;
+	
+	if(P->tripType==1)
+	{
+	cout<<"Round Trip \n\n";
+	cout<<"Journey\n";
+	cout<<"Flight No 1 : "<<P->route1.FlightNo1<<"\t"<<"Flight No 2 : "<<P->route1.FlightNo2<<endl;
+	cout<<"\nReturn Journey\n";
+	cout<<"Flight No 1 : "<<P->route2.FlightNo1<<"\t"<<"Flight No 2 : "<<P->route2.FlightNo2<<endl;
+    }
+	else if(P->tripType==0)
+	{
+	cout<<"One way \n";
+	cout<<"Flight No 1 : "<<P->route1.FlightNo1<<setw(5)<<"Flight No 2 : "<<P->route1.FlightNo2<<endl;
+     }
+}
 int main(){
 
 
@@ -576,6 +744,8 @@ int main(){
 	DisplayDepartureList("UAE");
 	DisplayDepartureList("Lahore");
 	DisplayShortestPath("UAE","Bahawalpur");
-	
+	cout<<"\n\n\tReservation\n";
+	MakeReservation();
+	PrintReservation(reserveHead);
 	DisplayCitiesFrom("Islamabad");
 }
