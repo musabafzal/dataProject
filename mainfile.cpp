@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string.h>
-#include <conio.h>
 #include <iomanip>
-#define MAXCITY 30
+#define MAXCITY 30    
 using namespace std;
 struct FlightType {
     int FlightNo;            	/* flight number */
@@ -35,8 +34,8 @@ struct ReservationType {
     char *firstName;              /* first name of passenger */
     char *lastName;               /* last name of passenger */
     int tripType;                 /* ROUNDTRIP or ONEWAY */
-    RouteType *route1;             /* first route */
-    RouteType *route2;             /* second route (only if ROUNDTRIP) */
+    RouteType route1;             /* first route */
+    RouteType route2;             /* second route (only if ROUNDTRIP) */
     ReservationType *nextReserve; /* next reservation in linked list */
 };
 
@@ -49,8 +48,8 @@ struct FlightNumberListType {
 
 FlightNumberListType flightList[MAXFLIGHT];  /* array of flights */
 CityListType cityList[MAXCITY];  /* array of cities */
-
-void init(){
+void init()
+{
 	for(int i=0; i<MAXCITY; i++)
 	{
 		cityList[i].cityName=NULL;
@@ -142,9 +141,18 @@ FlightType *nextAr(FlightType *newPtr)
     }
 }
 int top1=-1;
-void map(char *s){
+void map(char *s)
+{
 	cityList[++top1].cityName=new char[strlen(s)+1];
 	cityList[top1].cityName=s;
+}
+int findind(char *s)
+{
+	for(int i=0; i<MAXCITY; i++)
+	{
+		if(strcmp(cityList[i].cityName,s)==0)
+		return i;
+	}
 }
 FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *endCity, int timeArrival){
 	
@@ -160,6 +168,7 @@ FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *
 	newPtr->nextArrival=nextAr(newPtr);
 	return newPtr;
 }
+
 void ReadFlightData(){
 	flightList[0].FlightNo = 111;
 	flightList[1].FlightNo = 222;
@@ -288,7 +297,142 @@ void DisplayAllCities(){
 		return;
 		cout<<endl<<cityList[i].cityName;
 	}
-
+}
+int timeweight(int timeDepart, int timeArrival)
+{
+	int min1; int min2;   int hour1,hour2;   int time;
+	min1=timeDepart%100;      
+	min2=timeArrival%100;
+	hour1=timeDepart/100;
+	hour2=timeArrival/100;
+	if(min2-min1<0)
+	{
+		min2=min2+60;
+		min2=min2-min1;
+		hour2=hour2-1;
+	}
+	else
+	min2=min2-min1;
+	
+	hour2=hour2-hour1;
+	time=(hour2*100)+min2;
+	return time;
+}
+int find(int k, int a[], int j)
+{
+	for(int i=0; i<=j; i++)
+	{
+		if(a[i]==k)
+		return 0;
+	}
+	return 1;
+}
+int min(int a,int b,int c=4800,int d=4800, int e=4800, int f=4800)
+{
+	int min;
+	int N[6]={a,b,c,d,e,f};
+	min=N[0];
+	for(int i=0; i<6; i++)
+	{
+		if(N[i]<min)
+		min=N[i];
+	}
+	return min;
+}
+int timeadd(int x, int y)
+{ int time;
+   int min1,min2,hour1,hour2;
+   min1=x%100;    hour1=x/100;
+   hour2=y/100;
+   min2=y%100;
+   if(min1+min2>=60)
+   {
+   	    min2=(min2+min1)-60;
+   	    hour2=hour2+1+hour1;
+   }
+   else
+   {
+     min2=min2+min1;
+     hour2=hour2+hour1;
+  }
+     time=(hour2*100)+min2;
+     return time;
+}
+void DisplayShortestPath(char *startCity,char *endCity)
+{
+	int a[30]={0};     int i;     FlightType *p,*t;  int w[top1];   int min=4800;   int j=0; int c=-1; int weight; int s,e; int cc; int parent,path[30],par[30];
+	
+	i=findind(startCity);
+	s=i;
+	
+	w[s]=0;
+	e=findind(endCity);
+	a[j]=i;
+	
+	while(j!=top1)
+	   {   //cout<<"Flag 3\n";
+	      min=4800;
+	       for(int z=j; z>=0  ;z--)
+	       {    
+	           for(p=cityList[a[z]].nextDeparture;  p!=NULL;  p=p->nextDeparture)
+	          {
+                    weight=timeadd(w[a[z]],timeweight(p->timeDepart,p->timeArrival));
+                    cc=findind(p->endCity);
+		            if(weight<min && find(cc,a,j))
+		            {
+		              parent=a[z];
+			          min=weight;
+			          t=p;	
+		            }
+	          }
+           }
+            
+            i=findind(t->endCity);
+            path[i]=parent;
+            
+             w[i]=min;
+             
+             a[++j]=i;
+             //cout<<"Flag 1\n";
+         for(int k=0; k<=top1; k++)
+          {
+          	//cout<<"Flag 2\n";
+             if(k!=s && find(k,a,j))
+              {
+        	     min=4800;
+        		for(int z=j; z>=0  ;z--)
+	            {
+	               for(p=cityList[a[z]].nextDeparture;  p!=NULL;  p=p->nextDeparture)
+	               {
+		              if(strcmp(p->endCity,cityList[k].cityName)==0)
+		              {
+		              	weight=timeadd(timeweight(p->timeDepart,p->timeArrival),w[a[z]]);
+		                 if(weight<min)
+		                 {
+		                    min=weight;	
+						 }
+		              }   
+	               }
+	               
+                }  
+				w[k]=min; 
+		      }
+          }
+         //cout<<w[e]<<endl;
+     }
+     int q=0;
+     for(parent=e; q<=30 && par[c]!=s; q++)
+     {
+     	par[++c]=path[parent];
+		parent=par[c];	
+	 }
+	 for(;c!=-1;)
+	 {
+	 	cout<<cityList[par[c--]].cityName<<"->";
+	 }
+	 cout<<cityList[e].cityName;
+	 cout<<endl;
+     cout<<"Shortest Path weight: \n"<<w[e]/100<<": "<<w[e]%100<<endl;
 }
 #define NOTVISITED 1
 #define VISITED 2
@@ -334,8 +478,9 @@ void DisplayCitiesFrom(char *startCity){
 	status[i]=VISITED;
 	CityListType citytmp;
 	while(top!=-1){
+		citytmp=Pop();
 	cout<<citytmp.cityName<<"->";
-	citytmp=Pop();
+	
 	int z=0;
 	for(z=0;z<count;z++){
 		if(!(strcmp(cityList[z].cityName,citytmp.cityName)))
@@ -358,15 +503,55 @@ void DisplayCitiesFrom(char *startCity){
 	}
 }
 
+int FindRoute(char *startCity, char *endCity, RouteType &route){
+	FlightType *tmp = CityDepartureList(startCity);
+	int count=0;
+	for(;tmp!=NULL;tmp=tmp->nextDeparture){
+		if(!strcmp(tmp->endCity,endCity)){
+			count++;
+			break;
+		}
+	}
+	if(count!=0){
+		route.Day=0316;
+		route.FlightNo1=tmp->FlightNo;
+		cout<<tmp->FlightNo;
+		route.FlightNo2=0;
+		route.nHops=1;
+		return 1;
+	}
+	else{
+	FlightType *tmp1 = CityDepartureList(startCity);
+	FlightType *tmp2=CityArrivalList(endCity);
+	int count=0;
+	for(;tmp1!=NULL;tmp1=tmp1->nextDeparture){
+		
+		for(;tmp2!=NULL;tmp2=tmp2->nextArrival){
+			if(!strcmp(tmp1->endCity,tmp2->startCity))
+			break;
+		}
+		
+		if(!strcmp(tmp1->endCity,tmp2->startCity))
+		break;
+		
+	}
+	cout<<tmp1->endCity;
+	cout<<tmp2->startCity;
+	return 1;
+	}
+}
 int main(){
+
+
     init();
 	ReadFlightData();
-//	DisplayDepartureList("Bahawalpur");
-	DisplayCitiesFrom("Karachi");
-/*	DisplayFlightInfo(FlightByNumber(654));
-//	DisplayAllCities();
+	DisplayFlightInfo(FlightByNumber(654));
+	DisplayAllCities();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
-	DisplayDepartureList("UAE");*/
+	DisplayDepartureList("UAE");
+	DisplayDepartureList("Lahore");
+	DisplayShortestPath("Quetta","Bahawalpur");
 	
+	DisplayCitiesFrom("Islamabad");
 }
