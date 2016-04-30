@@ -55,14 +55,24 @@ void init()
 		cityList[i].cityName=NULL;
 	}
 }
+int hash(char *s)
+{
+	for(int i=0; i<MAXCITY; i++)
+	{
+		if(strcmp(cityList[i].cityName,s)==0)
+		return i;
+	}
+	return -1;
+}
 FlightType *nextDp(FlightType *newPtr)
 {
 	int i=0;
-	for(i=0; i<MAXCITY; i++)
+	/*for(i=0; i<MAXCITY; i++)
 	{
 		if(!(strcmp(cityList[i].cityName,newPtr->startCity)))
 		break;
-	}
+	}*/
+	i=hash(newPtr->startCity);
 	
 	FlightType *tmp=cityList[i].nextDeparture;
 	if(tmp==NULL)
@@ -99,12 +109,13 @@ FlightType *nextAr(FlightType *newPtr)
 {
 	
 	int i=0;
-	for( i=0; i<MAXCITY; i++)
+	/*for( i=0; i<MAXCITY; i++)
 	{
 		
 		if(!(strcmp(cityList[i].cityName,newPtr->endCity)))
 		break;
-	}
+	}*/
+	i=hash(newPtr->endCity);
 	
 	FlightType *tmp=cityList[i].nextArrival;
 	if(tmp==NULL)
@@ -146,14 +157,7 @@ void map(char *s)
 	cityList[++top1].cityName=new char[strlen(s)+1];
 	cityList[top1].cityName=s;
 }
-int findind(char *s)
-{
-	for(int i=0; i<MAXCITY; i++)
-	{
-		if(strcmp(cityList[i].cityName,s)==0)
-		return i;
-	}
-}
+
 FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *endCity, int timeArrival){
 	
 	FlightType *newPtr =new FlightType;
@@ -362,11 +366,11 @@ void DisplayShortestPath(char *startCity,char *endCity)
 {
 	int a[30]={0};     int i;     FlightType *p,*t;  int w[top1];   int min=4800;   int j=0; int c=-1; int weight; int s,e; int cc; int parent,path[30],par[30];
 	
-	i=findind(startCity);
+	i=hash(startCity);
 	s=i;
 	
 	w[s]=0;
-	e=findind(endCity);
+	e=hash(endCity);
 	a[j]=i;
 	
 	while(j!=top1)
@@ -377,7 +381,7 @@ void DisplayShortestPath(char *startCity,char *endCity)
 	           for(p=cityList[a[z]].nextDeparture;  p!=NULL;  p=p->nextDeparture)
 	          {
                     weight=timeadd(w[a[z]],timeweight(p->timeDepart,p->timeArrival));
-                    cc=findind(p->endCity);
+                    cc=hash(p->endCity);
 		            if(weight<min && find(cc,a,j))
 		            {
 		              parent=a[z];
@@ -387,7 +391,7 @@ void DisplayShortestPath(char *startCity,char *endCity)
 	          }
            }
             
-            i=findind(t->endCity);
+            i=hash(t->endCity);
             path[i]=parent;
             
              w[i]=min;
@@ -513,7 +517,7 @@ int main(){
 	DisplayDepartureList("Bahawalpur");
 	DisplayDepartureList("UAE");
 	DisplayDepartureList("Lahore");
-	DisplayShortestPath("Quetta","Bahawalpur");
+	DisplayShortestPath("UAE","Bahawalpur");
 	
 	DisplayCitiesFrom("Islamabad");
 }
