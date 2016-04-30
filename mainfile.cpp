@@ -594,16 +594,16 @@ int FindRoute(char *startCity, char *endCity, RouteType &route){
 	
 	for(;tmp1!=NULL;tmp1=tmp1->nextDeparture){
 		
-		for(;tmp2!=NULL;tmp2=tmp2->nextArrival){
+		for(tmp2=CityArrivalList(endCity);tmp2!=NULL;tmp2=tmp2->nextArrival){
 			if(!strcmp(tmp1->endCity,tmp2->startCity))
 			break;
 		}
-		
+		if(tmp2!=NULL){
 		if(!strcmp(tmp1->endCity,tmp2->startCity)){
 		count1++;
 		break;
 		}
-		
+		}
 	}
 	if(count1!=0&&timediff(tmp1->timeArrival,tmp2->timeDepart,route.Day)>30){
 		    int i=0;
@@ -809,6 +809,36 @@ void DeleteReserve(){
 		}
 	}
 	if(p!=NULL){
+		int i=0;
+		for(i=0; i<Noflights ;i++)
+		{ 
+		if(flightList[i].FlightNo==p->route1.FlightNo1)
+		break;
+		}
+		if(p->route1.FlightNo1!=0)
+		flightList[i].flight->noOfPassengers--;
+		for(i=0; i<Noflights ;i++)
+		{ 
+		if(flightList[i].FlightNo==p->route1.FlightNo2)
+		break;
+		}
+		if(p->route1.FlightNo2!=0)
+		flightList[i].flight->noOfPassengers--;
+		for(i=0; i<Noflights ;i++)
+		{ 
+		if(flightList[i].FlightNo==p->route2.FlightNo1)
+		break;
+		}
+		if(p->route2.FlightNo1!=0)
+		flightList[i].flight->noOfPassengers--;
+		for(i=0; i<Noflights ;i++)
+		{ 
+		if(flightList[i].FlightNo==p->route2.FlightNo2)
+		break;
+		}
+		if(p->route2.FlightNo2!=0)
+		flightList[i].flight->noOfPassengers--;
+		
 		if(p==reserveHead){
 			reserveHead=reserveHead->nextReserve;
 		}
@@ -831,6 +861,7 @@ int main(){
     init();
 	ReadFlightData();
 //	DisplayFlightInfo(FlightByNumber(654));
+//	DisplayDepartureList("Quetta");
 /*	DisplayAllCities();
 	DisplayDepartureList("Islamabad");
 	DisplayDepartureList("Bahawalpur");
