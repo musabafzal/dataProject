@@ -732,6 +732,15 @@ void PrintReservation(ReservationType *P)
 	cout<<"Flight No 1 : "<<P->route1.FlightNo1<<setw(5)<<"Flight No 2 : "<<P->route1.FlightNo2<<endl;
      }
 }
+void PrintAllReservation()
+{
+	ReservationType *p=reserveHead;
+	for(; p!=NULL; p=p->nextReserve)
+	{
+		  cout<<endl;
+	      PrintReservation(p);
+    }
+}
 int main(){
 
 
