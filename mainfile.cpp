@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <iomanip>
+#include <conio.h>
 #define MAXCITY 30    
 using namespace std;
 struct FlightType {
@@ -14,7 +15,7 @@ struct FlightType {
     FlightType *nextArrival; 	/* next arrival node to this city */
 };
 
-int Noflights=21;
+int Noflights=-1;
 struct CityListType {
     char *cityName;           	   /* name of the city */
     FlightType *nextDeparture;    /* first departure from this city */
@@ -159,7 +160,7 @@ void map(char *s)
 }
 
 FlightType *MakeFlightNode(int FlightNo, char *startCity, int timeDepart, char *endCity, int timeArrival){
-	
+	Noflights++;
 	FlightType *newPtr =new FlightType;
 	newPtr->FlightNo=FlightNo;
 	newPtr->startCity=new char[strlen(startCity)+1];
@@ -858,20 +859,125 @@ void DeleteReserve(){
 		cout<<"No Record Found"<<endl;
 }
 int main(){
+	int n;
     init();
 	ReadFlightData();
-	cout<<"\n\n\t--------------------AIRLINE RESERVATION---------------------------\n\n\n\tENTER\n\t1. Add City\n\t2. Add Flight\n\t3. Display All Cities\n\t4. Display City Departure List\n\t5. Display City Arrival List\n\t6. Display Cities From\n\t7. Display Shortest path between cities\n\t8. Make Reservation\n\t9. Delete Reservation\n\t10. Print Passengers Reservation Schedule\n\n";
-//	DisplayFlightInfo(FlightByNumber(654));
-//	DisplayDepartureList("Quetta");
-/*	DisplayAllCities();
-	DisplayDepartureList("Islamabad");
-	DisplayDepartureList("Bahawalpur");
-	DisplayDepartureList("UAE");
-	DisplayDepartureList("Lahore");
-	DisplayShortestPath("UAE","Bahawalpur");*/
-	MakeReservation();
-	MakeReservation();
-	PrintAllReservation();
-	DeleteReserve();
-	PrintAllReservation();
+	do{
+		system("cls");
+		cout<<"\n\n\t--------------------AIRLINE RESERVATION---------------------------\n\n\n\tENTER\n\t1. Add City\n\t2. Add Flight\n\t3. Display All Cities\n\t4. Display City Departure List\n\t5. Display City Arrival List\n\t6. Display Cities From\n\t7. Display Shortest path between cities\n\t8. Make Reservation\n\t9. Delete Reservation\n\t10. Print Passengers Reservation Schedule\n\t11. Exit\n\n";
+		cin>>n;
+			if(n==1){
+				string city1Name; char *c;
+				cout<<"Enter City Name :\n";
+				cin>>city1Name;
+				c=new char[city1Name.length()+1];
+				city1Name.copy(c,city1Name.length(),0);
+				map(c);
+				c[city1Name.length()]='\0';
+				cout<<"City Added\nPress any key to return";
+				getch();
+			}else if(n==2){
+				
+				int fno,timeA,timeD;
+				string city3Name,city2Name; char *c1,*c2;
+
+				cout<<"Enter Flight No.: ";
+				cin>>fno;
+				cout<<"Enter Start City: ";
+				cin>>city3Name;
+				cout<<"Enter Departure Time: ";
+				cin>>timeD;
+				cout<<"Enter End City: ";
+				cin>>city2Name;
+				cout<<"Enter Arrival Time: ";
+				cin>>timeA;
+				
+				c1=new char[city3Name.length()+1];
+				city3Name.copy(c1,city3Name.length(),0);
+				c2=new char[city2Name.length()+1];
+				city2Name.copy(c2,city2Name.length(),0);
+				c1[city3Name.length()]='\0';
+				c2[city2Name.length()]='\0';
+				
+				FlightType *tmp=MakeFlightNode(fno,c1,timeD,c2,timeA);
+				flightList[Noflights].flight=tmp;
+				flightList[Noflights].FlightNo=fno;
+				cout<<"Flight Added\nPress any key to return";
+				getch();
+				
+			}else if(n==3){
+				DisplayAllCities();
+				cout<<endl<<"Press any key to return";
+				getch();
+			}else if(n==4){
+				
+				string city4Name; char *c4;
+				cout<<"Enter City: ";
+				cin>>city4Name;
+				c4=new char[city4Name.length()+1];
+				city4Name.copy(c4,city4Name.length(),0);
+				c4[city4Name.length()]='\0';
+				DisplayDepartureList(c4);
+				cout<<endl<<"Press any key to return";
+				getch();
+			}else if(n==5){
+				
+				string city5Name; char *c5;
+				cout<<"Enter City: ";
+				cin>>city5Name;
+				c5=new char[city5Name.length()+1];
+				city5Name.copy(c5,city5Name.length(),0);
+				c5[city5Name.length()]='\0';
+				DisplayArrivalList(c5);
+				cout<<endl<<"Press any key to return";
+				getch();
+			}else if(n==6){
+				
+				string city6Name; char *c6;
+				cout<<"Enter City: ";
+				cin>>city6Name;
+				c6=new char[city6Name.length()+1];
+				city6Name.copy(c6,city6Name.length(),0);
+				c6[city6Name.length()]='\0';
+				
+				DisplayCitiesFrom(c6);
+				
+				cout<<endl<<"Press any key to return";
+				getch();
+			}else if(n==7){
+				string city3Name,city2Name; char *c1,*c2;
+
+				cout<<"Enter Start City: ";
+				cin>>city3Name;
+				cout<<"Enter End City: ";
+				cin>>city2Name;
+				
+				c1=new char[city3Name.length()+1];
+				city3Name.copy(c1,city3Name.length(),0);
+				c2=new char[city2Name.length()+1];
+				city2Name.copy(c2,city2Name.length(),0);
+				c1[city3Name.length()]='\0';
+				c2[city2Name.length()]='\0';
+				
+				DisplayShortestPath(c1,c2);
+				
+				cout<<"\nPress any key to return";
+				getch();
+				
+			}else if(n==8){
+				MakeReservation();
+				cout<<"\nYour seat has been reserved\nPress any key to return";
+				getch();
+			}else if(n==9){
+				DeleteReserve();
+				cout<<"\nReservation has been deleted\nPress any key to return";
+				getch();				
+			}else if(n==10){
+				PrintSchedule();
+				cout<<"\nPress any key to return";
+				getch();				
+			}
+			
+
+	}while(n!=11);
 }
