@@ -860,6 +860,7 @@ void DeleteReserve(){
 int main(){
     init();
 	ReadFlightData();
+	cout<<"\n\n\t--------------------AIRLINE RESERVATION---------------------------\n\n\n\tENTER\n\t1. Add City\n\t2. Add Flight\n\t3. Display All Cities\n\t4. Display City Departure List\n\t5. Display City Arrival List\n\t6. Display Cities From\n\t7. Display Shortest path between cities\n\t8. Make Reservation\n\t9. Delete Reservation\n\t10. Print Passengers Reservation Schedule\n\n";
 //	DisplayFlightInfo(FlightByNumber(654));
 //	DisplayDepartureList("Quetta");
 /*	DisplayAllCities();
